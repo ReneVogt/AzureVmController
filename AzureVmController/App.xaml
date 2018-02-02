@@ -1,9 +1,9 @@
-﻿<Application x:Class="AzureVmController.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:AzureVmController"
-             StartupUri="MainWindow.xaml">
-    <Application.Resources>
-         
-    </Application.Resources>
+﻿<Application x:Class="Com.revo.AzureVmController.App"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 Startup="Application_Startup"
+			 Exit="Application_Exit">
+	<Application.Resources>
+		 
+	</Application.Resources>
 </Application>
