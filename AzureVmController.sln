@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2027
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureVmController", "AzureVmController\AzureVmController.csproj", "{DB4205F5-9E80-4D89-AEDF-579CC58AD79D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DB4205F5-9E80-4D89-AEDF-579CC58AD79D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB4205F5-9E80-4D89-AEDF-579CC58AD79D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB4205F5-9E80-4D89-AEDF-579CC58AD79D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB4205F5-9E80-4D89-AEDF-579CC58AD79D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6633F8C2-1DFC-40CD-8DF1-DF5F4ED92F7E}
+	EndGlobalSection
+EndGlobal
