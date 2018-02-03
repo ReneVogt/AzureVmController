@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Com.revo.AzureVmController.Annotations;
+using Com.revo.AzureVmController.Models;
 using Com.revo.AzureVmController.ViewModels;
 
 namespace Com.revo.AzureVmController.Views
@@ -15,10 +16,20 @@ namespace Com.revo.AzureVmController.Views
 	public partial class MainWindow : INotifyPropertyChanged
 	{
 		private bool userWantsToExit;
+		private bool isUpdating;
 
-		public ObservableCollection<VmListItem> VmItems { get; } = new ObservableCollection<VmListItem>();
-		public bool CanEditSettings { get; private set; } = true;
-		public bool IsUpdating { get; private set; }
+		public VmListItemCollection VmItems { get; } = new VmListItemCollection();
+		public bool CanEditSettings => !(IsUpdating || VmItems.Any(item => item.Busy));
+		public bool IsUpdating {
+			get => isUpdating;
+			private set
+			{
+				if (isUpdating == value) return;
+				isUpdating = value;
+				OnPropertyChanged();
+				OnPropertyChanged(nameof(CanEditSettings));
+			}
+		}
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -26,7 +37,6 @@ namespace Com.revo.AzureVmController.Views
 		{
 			InitializeComponent();
 			DataContext = this;
-			VmItems.Add(new VmListItem("blöder Name", VmListItem.VmState.Deallocated));
 		}
 		private void MainWindow_OnActivated(object sender, EventArgs e)
 		{
@@ -46,11 +56,9 @@ namespace Com.revo.AzureVmController.Views
 			base.OnDeactivated(e);
 			Hide();
 		}
-		private void Refresh_Clicked(object sender, EventArgs e)
+		private async void Refresh_Clicked(object sender, EventArgs e)
 		{
-			IsUpdating = !IsUpdating;
-			OnPropertyChanged(nameof(CanEditSettings));
-			OnPropertyChanged(nameof(IsUpdating));
+			await ReloadAsync();
 		}
 		private void Settings_Clicked(object sender, EventArgs e)
 		{
@@ -65,6 +73,16 @@ namespace Com.revo.AzureVmController.Views
 		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+		}
+		private async Task ReloadAsync()
+		{
+			IsUpdating = true;
+			await VmItems.ReloadAsync(
+				clientID: ProtectedSettings.ClientID, 
+				authKey: ProtectedSettings.AuthKey, 
+				tenantID: ProtectedSettings.TenantID, 
+				subscriptionID: ProtectedSettings.SubscriptionID);
+			IsUpdating = false;
 		}
 	}
 }

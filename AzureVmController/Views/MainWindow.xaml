@@ -26,12 +26,14 @@
 			<RowDefinition Height="Auto"></RowDefinition>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="100" />
+			<ColumnDefinition Width="*" />
 			<ColumnDefinition Width="Auto"/>
 		</Grid.ColumnDefinitions>
 		<ListBox ItemsSource="{Binding Source={StaticResource VmItemsSource}}" 
 		         Height="Auto"
-				 Grid.Row="0" Grid.ColumnSpan="2"
+				 Grid.Row="0"
+				 Grid.Column="0"
+		         Grid.ColumnSpan="2"
 				 IsEnabled="{Binding Path=IsUpdating, Converter={StaticResource BoolInverter}}">
 			<ListBox.ItemTemplate>
 				<DataTemplate>
@@ -46,7 +48,8 @@
 		<ProgressBar Grid.Row="1" Grid.Column="0"
 					 Orientation="Horizontal"
 					 HorizontalAlignment="Left"
-					 Width="100"
+					 Width="150"
+					 Margin="2,2,10,2"
 					 IsIndeterminate="True">
 			<ProgressBar.Style>
 				<Style TargetType="ProgressBar">
