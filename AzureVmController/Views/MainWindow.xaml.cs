@@ -18,6 +18,7 @@ namespace Com.revo.AzureVmController.Views
 
 		public ObservableCollection<VmListItem> VmItems { get; } = new ObservableCollection<VmListItem>();
 		public bool CanEditSettings { get; private set; } = true;
+		public bool IsUpdating { get; private set; }
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -47,8 +48,9 @@ namespace Com.revo.AzureVmController.Views
 		}
 		private void Refresh_Clicked(object sender, EventArgs e)
 		{
-			CanEditSettings = !CanEditSettings;
+			IsUpdating = !IsUpdating;
 			OnPropertyChanged(nameof(CanEditSettings));
+			OnPropertyChanged(nameof(IsUpdating));
 		}
 		private void Settings_Clicked(object sender, EventArgs e)
 		{
