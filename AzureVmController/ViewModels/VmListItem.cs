@@ -2,8 +2,11 @@
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 using Com.revo.AzureVmController.Annotations;
 using Microsoft.Azure.Management.Compute.Fluent;
+using Microsoft.Azure.Management.Compute.Fluent.Models;
 
 namespace Com.revo.AzureVmController.ViewModels
 {
@@ -19,9 +22,24 @@ namespace Com.revo.AzureVmController.ViewModels
 			Running,
 			Starting
 		}
-		private readonly IVirtualMachine vm;
+		private IVirtualMachine vm;
+		private VmState state;
+		public event PropertyChangedEventHandler PropertyChanged;
 		public string Name => $"{vm.ResourceGroupName}\\{vm.Name}";
-		public VmState State { get; private set; }
+		public OperatingSystemTypes OsType => vm.OSType;
+		public VmState State
+		{
+			get => state;
+			private set
+			{
+				if (state == value) return;
+				state = value;
+				OnPropertyChanged();
+				OnPropertyChanged(nameof(CanStart));
+				OnPropertyChanged(nameof(CanStop));
+				OnPropertyChanged(nameof(CanDeallocate));
+			}
+		}
 		public bool CanStart => State == VmState.Deallocated || State == VmState.Stopped;
 		public bool CanStop => State == VmState.Running;
 		public bool CanDeallocate => State == VmState.Running || State == VmState.Stopped;
@@ -30,10 +48,30 @@ namespace Com.revo.AzureVmController.ViewModels
 		public VmListItem([NotNull] IVirtualMachine vm)
 		{
 			this.vm = vm ?? throw new ArgumentNullException(nameof(vm));
-			UpdateVmState();
+			UpdateVmState();			
 		}
 
-		public event PropertyChangedEventHandler PropertyChanged;
+		public async Task StartAsync(CancellationToken cancellationToken = default(CancellationToken))
+		{
+			State = VmState.Starting;
+			await vm.StartAsync(cancellationToken);
+			vm = await vm.RefreshAsync(cancellationToken);
+			UpdateVmState();
+		}
+		public async Task StopAsync(CancellationToken cancellationToken = default(CancellationToken))
+		{
+			State = VmState.Stopping;
+			await vm.PowerOffAsync(cancellationToken);
+			vm = await vm.RefreshAsync(cancellationToken);
+			UpdateVmState();
+		}
+		public async Task DeallocateAsync(CancellationToken cancellationToken = default(CancellationToken))
+		{
+			State = VmState.Deallocating;
+			await vm.DeallocateAsync(cancellationToken);
+			vm = await vm.RefreshAsync(cancellationToken);
+			UpdateVmState();
+		}
 		[NotifyPropertyChangedInvocator]
 		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
 		{
@@ -42,16 +80,13 @@ namespace Com.revo.AzureVmController.ViewModels
 
 		private void UpdateVmState()
 		{
-			VmState state = VmState.Unknown;
-			if (vm.PowerState == PowerState.Deallocated) state = VmState.Deallocated;
-			if (vm.PowerState == PowerState.Deallocating) state = VmState.Deallocating;
-			if (vm.PowerState == PowerState.Stopped) state = VmState.Stopped;
-			if (vm.PowerState == PowerState.Stopping) state = VmState.Stopping;
-			if (vm.PowerState == PowerState.Running) state = VmState.Running;
-			if (vm.PowerState == PowerState.Starting) state = VmState.Starting;
-			if (state == State) return;
-			State = state;
-			OnPropertyChanged(nameof(State));
+			if (vm.PowerState == PowerState.Deallocated) State = VmState.Deallocated;
+			else if (vm.PowerState == PowerState.Deallocating) State = VmState.Deallocating;
+			else if (vm.PowerState == PowerState.Stopped) State = VmState.Stopped;
+			else if (vm.PowerState == PowerState.Stopping) State = VmState.Stopping;
+			else if (vm.PowerState == PowerState.Running) State = VmState.Running;
+			else if (vm.PowerState == PowerState.Starting) State = VmState.Starting;
+			else State = VmState.Unknown;
 		}
 	}
 }

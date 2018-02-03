@@ -4,10 +4,12 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Windows;
+using System.Windows.Controls;
 using Com.revo.AzureVmController.Annotations;
 using Com.revo.AzureVmController.Models;
 using Com.revo.AzureVmController.ViewModels;
+
 
 namespace Com.revo.AzureVmController.Views
 {
@@ -41,7 +43,7 @@ namespace Com.revo.AzureVmController.Views
 		}
 		private void MainWindow_OnActivated(object sender, EventArgs e)
 		{
-			var workingArea = Screen.PrimaryScreen.WorkingArea;
+			var workingArea = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
 			Top = workingArea.Top + workingArea.Height - Height - 10;
 			Left = workingArea.Left + workingArea.Width - Width - 10;
 		}
@@ -57,19 +59,22 @@ namespace Com.revo.AzureVmController.Views
 			base.OnDeactivated(e);
 			Hide();
 		}
-		private async void Refresh_Clicked(object sender, EventArgs e)
+		private async void Refresh_Clicked(object sender, RoutedEventArgs e)
 		{
 			await ReloadAsync();
 		}
-		private void Settings_Clicked(object sender, EventArgs e)
+		private void Settings_Clicked(object sender, RoutedEventArgs e)
 		{
 			(new SettingsWindow()).ShowDialog();
 		}
-		private void Exit_Clicked(object sender, EventArgs e)
+		private void Exit_Clicked(object sender, RoutedEventArgs e)
 		{
 			userWantsToExit = true;
 			Close();
 		}
+		private void Start_Clicked(object sender, RoutedEventArgs e) => ((sender as Button)?.DataContext as VmListItem)?.StartAsync();
+		private void Stop_Clicked(object sender, RoutedEventArgs e) => ((sender as Button)?.DataContext as VmListItem)?.StopAsync();
+		private void Deallocate_Clicked(object sender, RoutedEventArgs e) => ((sender as Button)?.DataContext as VmListItem)?.DeallocateAsync();
 		[NotifyPropertyChangedInvocator]
 		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
 		{

@@ -20,7 +20,6 @@ namespace Com.revo.AzureVmController
 				Text = @"Azure VM controller",
 				Icon = AzureVmController.Properties.Resources.cloud,
 				Visible = true
-
 			};
 			notifyIcon.MouseMove += (_, __) =>
 			{
