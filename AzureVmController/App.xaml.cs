@@ -14,9 +14,6 @@ namespace Com.revo.AzureVmController
 		private void Application_Startup(object sender, StartupEventArgs e)
 		{
 			mainWindow = new Views.MainWindow();
-			var workingArea = Screen.PrimaryScreen.WorkingArea;
-			mainWindow.Top = workingArea.Top + workingArea.Height - mainWindow.Height - 10;
-			mainWindow.Left = workingArea.Left + workingArea.Width - mainWindow.Width - 10;
 			notifyIcon = new NotifyIcon
 			{
 				Text = @"Azure VM controller",

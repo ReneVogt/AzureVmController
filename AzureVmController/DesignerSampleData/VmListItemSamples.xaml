@@ -1,0 +1,10 @@
+﻿ <sysCol:ArrayList xmlns:sysCol="clr-namespace:System.Collections;assembly=mscorlib"
+	xmlns:ViewModels="clr-namespace:Com.revo.AzureVmController.ViewModels">
+	<ViewModels:VmListItem Name="test1" State="Deallocated" />
+	<ViewModels:VmListItem Name="test2" State="Starting" />
+	<ViewModels:VmListItem Name="test3" State="Stopping" />
+	<ViewModels:VmListItem Name="test4" State="Stopped" />
+	<ViewModels:VmListItem Name="test5" State="Running" />
+	<ViewModels:VmListItem Name="test6" State="Deallocating" />
+	<ViewModels:VmListItem Name="testmitlangemlangemlangemmnamen" State="Deallocating" />
+</sysCol:ArrayList>

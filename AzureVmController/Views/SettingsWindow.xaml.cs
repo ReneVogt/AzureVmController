@@ -1,7 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using Com.revo.AzureVmController.Annotations;
 using Com.revo.AzureVmController.ViewModels;
 
 namespace Com.revo.AzureVmController.Views
@@ -9,29 +6,21 @@ namespace Com.revo.AzureVmController.Views
 	/// <summary>
 	/// Interaktionslogik für SettingsWindow.xaml
 	/// </summary>
-	public partial class SettingsWindow : INotifyPropertyChanged
+	public partial class SettingsWindow
 	{
-		public EditableCredentials Credentials { get; } = new EditableCredentials();
-
-		public event PropertyChangedEventHandler PropertyChanged;
+		private readonly EditableCredentials credentials = new EditableCredentials();
 
 		public SettingsWindow()
 		{
 			InitializeComponent();
-			Credentials.Load();
-			DataContext = Credentials;
-		}
-
-		[NotifyPropertyChangedInvocator]
-		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+			credentials.Load();
+			DataContext = credentials;
 		}
 
 		private void Ok_Clicked(object sender, EventArgs e)
 		{
 			DialogResult = true;
-			Credentials.Save();
+			credentials.Save();
 			Close();
 		}
 		private void Cancel_Clicked(object sender, EventArgs e)

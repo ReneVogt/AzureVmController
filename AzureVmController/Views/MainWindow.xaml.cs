@@ -1,21 +1,38 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
-using Com.revo.AzureVmController.Models;
+using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Forms;
+using Com.revo.AzureVmController.Annotations;
+using Com.revo.AzureVmController.ViewModels;
 
 namespace Com.revo.AzureVmController.Views
 {
 	/// <summary>
 	/// Interaktionslogik für MainWindow.xaml
 	/// </summary>
-	public partial class MainWindow
+	public partial class MainWindow : INotifyPropertyChanged
 	{
 		private bool userWantsToExit;
+
+		public ObservableCollection<VmListItem> VmItems { get; } = new ObservableCollection<VmListItem>();
+		public bool CanEditSettings { get; private set; } = true;
+
+		public event PropertyChangedEventHandler PropertyChanged;
 
 		public MainWindow()
 		{
 			InitializeComponent();
+			DataContext = this;
+			VmItems.Add(new VmListItem("blöder Name", VmListItem.VmState.Deallocated));
 		}
-
+		private void MainWindow_OnActivated(object sender, EventArgs e)
+		{
+			var workingArea = Screen.PrimaryScreen.WorkingArea;
+			Top = workingArea.Top + workingArea.Height - Height - 10;
+			Left = workingArea.Left + workingArea.Width - Width - 10;
+		}
 		protected override void OnClosing(CancelEventArgs e)
 		{
 			base.OnClosing(e);
@@ -28,6 +45,11 @@ namespace Com.revo.AzureVmController.Views
 			base.OnDeactivated(e);
 			Hide();
 		}
+		private void Refresh_Clicked(object sender, EventArgs e)
+		{
+			CanEditSettings = !CanEditSettings;
+			OnPropertyChanged(nameof(CanEditSettings));
+		}
 		private void Settings_Clicked(object sender, EventArgs e)
 		{
 			(new SettingsWindow()).ShowDialog();
@@ -36,6 +58,11 @@ namespace Com.revo.AzureVmController.Views
 		{
 			userWantsToExit = true;
 			Close();
+		}
+		[NotifyPropertyChangedInvocator]
+		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 	}
 }

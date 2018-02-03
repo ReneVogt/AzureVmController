@@ -4,16 +4,45 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		mc:Ignorable="d"
-		Title="Azure VM controller" Height="350" Width="525" Icon="../cloud.ico" ShowInTaskbar="False" Topmost="True" WindowStyle="None" ResizeMode="NoResize">
+		Title="Azure VM controller" 
+		Height="Auto" MinHeight="200" MaxHeight="400" 
+		Width="Auto" MinWidth="200" MaxWidth="500"
+		Icon="../cloud.ico" 
+		ShowInTaskbar="False" 
+		Topmost="True" 
+		WindowStyle="None" 
+		ResizeMode="NoResize" 
+		SizeToContent="WidthAndHeight"
+		WindowStartupLocation="Manual"
+		Activated="MainWindow_OnActivated">
+	<Window.Resources>
+		<CollectionViewSource x:Key="VmItemsSource" Source="{Binding VmItems}" d:Source="{d:DesignData ../DesignerSampleData/VmListItemSamples.xaml}" />
+	</Window.Resources>
 	<Grid>
 		<Grid.RowDefinitions>
-			<RowDefinition/>
-			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto"></RowDefinition>
 		</Grid.RowDefinitions>
-		<ListView Grid.Row="0"  Background="Black"></ListView>
+		<ListBox ItemsSource="{Binding Source={StaticResource VmItemsSource}}" 
+		         Height="Auto"
+				 Grid.Row="0">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<DockPanel Margin="2">
+						<Rectangle Fill="Gray" Width="32" Height="32" DockPanel.Dock="Left"/>
+						<TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+						<TextBlock Text="{Binding State}" VerticalAlignment="Center"/>
+					</DockPanel>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
 		<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
-		<Button Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Settings_Clicked" Margin="2,2,2,2">Settings...</Button>
-		<Button Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Exit_Clicked" Margin="2,2,2,2">Exit</Button>
+			<Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Refresh_Clicked" Margin="2,2,2,2">Refresh</Button>
+			<Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Settings_Clicked" Margin="2,2,2,2" IsEnabled="{Binding CanEditSettings}">Settings...</Button>
+			<Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Exit_Clicked" Margin="2,2,2,2">Exit</Button>
 		</StackPanel>
 	</Grid>
 </Window>
+
+
+
