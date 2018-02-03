@@ -1,4 +1,5 @@
-﻿<Window x:Class="Com.revo.AzureVmController.Views.MainWindow"
+﻿<!-- Copyright 2018 René Vogt. All rights reserved. Use of this source code is governed by the Apache License 2.0, as found in the LICENSE.txt file.-->
+<Window x:Class="Com.revo.AzureVmController.Views.MainWindow"
 		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"

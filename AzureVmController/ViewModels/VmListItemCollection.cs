@@ -1,3 +1,4 @@
+// Copyright 2018 René Vogt. All rights reserved. Use of this source code is governed by the Apache License 2.0, as found in the LICENSE.txt file.
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;

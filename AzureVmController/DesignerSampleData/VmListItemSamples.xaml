@@ -1,4 +1,5 @@
-﻿ <sysCol:ArrayList xmlns:sysCol="clr-namespace:System.Collections;assembly=mscorlib"
+﻿<!-- Copyright 2018 René Vogt. All rights reserved. Use of this source code is governed by the Apache License 2.0, as found in the LICENSE.txt file. -->
+<sysCol:ArrayList xmlns:sysCol="clr-namespace:System.Collections;assembly=mscorlib"
 	xmlns:ViewModels="clr-namespace:Com.revo.AzureVmController.ViewModels">
 	<ViewModels:VmListItem Name="test1" State="Deallocated" />
 	<ViewModels:VmListItem Name="test2" State="Starting" />
