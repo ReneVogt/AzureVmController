@@ -43,9 +43,11 @@ namespace Com.revo.AzureVmController.Views
 		}
 		private void MainWindow_OnActivated(object sender, EventArgs e)
 		{
-			var workingArea = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
-			Top = workingArea.Top + workingArea.Height - Height - 10;
-			Left = workingArea.Left + workingArea.Width - Width - 10;
+			AdjustLocation();
+		}
+		private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
+		{
+			AdjustLocation();
 		}
 		protected override void OnClosing(CancelEventArgs e)
 		{
@@ -80,6 +82,12 @@ namespace Com.revo.AzureVmController.Views
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
+		private void AdjustLocation()
+		{
+			var workingArea = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
+			Top = workingArea.Top + workingArea.Height - Height - 10;
+			Left = workingArea.Left + workingArea.Width - Width - 10;
+		}
 		private async Task ReloadAsync()
 		{
 			IsUpdating = true;
@@ -88,7 +96,7 @@ namespace Com.revo.AzureVmController.Views
 				authKey: ProtectedSettings.AuthKey, 
 				tenantID: ProtectedSettings.TenantID, 
 				subscriptionID: ProtectedSettings.SubscriptionID);
-			IsUpdating = false;
+			IsUpdating = false;			
 		}
 	}
 }

@@ -33,11 +33,13 @@ namespace Com.revo.AzureVmController.ViewModels
 			private set
 			{
 				if (state == value) return;
+				bool busy = Busy;
 				state = value;
 				OnPropertyChanged();
 				OnPropertyChanged(nameof(CanStart));
 				OnPropertyChanged(nameof(CanStop));
 				OnPropertyChanged(nameof(CanDeallocate));
+				if (busy != Busy) OnPropertyChanged(nameof(Busy));					
 			}
 		}
 		public bool CanStart => State == VmState.Deallocated || State == VmState.Stopped;
