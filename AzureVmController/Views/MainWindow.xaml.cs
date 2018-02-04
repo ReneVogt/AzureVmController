@@ -1,7 +1,6 @@
 ﻿// Copyright 2018 René Vogt. All rights reserved. Use of this source code is governed by the Apache License 2.0, as found in the LICENSE.txt file.
 using System;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,7 +21,6 @@ namespace Com.revo.AzureVmController.Views
 		private bool isUpdating;
 
 		public VmListItemCollection VmItems { get; } = new VmListItemCollection();
-		public bool CanEditSettings => !(IsUpdating || VmItems.Any(item => item.Busy));
 		public bool IsUpdating {
 			get => isUpdating;
 			private set
@@ -30,7 +28,6 @@ namespace Com.revo.AzureVmController.Views
 				if (isUpdating == value) return;
 				isUpdating = value;
 				OnPropertyChanged();
-				OnPropertyChanged(nameof(CanEditSettings));
 			}
 		}
 
@@ -43,11 +40,11 @@ namespace Com.revo.AzureVmController.Views
 		}
 		private void MainWindow_OnActivated(object sender, EventArgs e)
 		{
-			AdjustLocation();
+			AdjustLocation(RenderSize);
 		}
 		private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
 		{
-			AdjustLocation();
+			AdjustLocation(e.NewSize);
 		}
 		protected override void OnClosing(CancelEventArgs e)
 		{
@@ -65,9 +62,10 @@ namespace Com.revo.AzureVmController.Views
 		{
 			await ReloadAsync();
 		}
-		private void Settings_Clicked(object sender, RoutedEventArgs e)
+		private async void Settings_Clicked(object sender, RoutedEventArgs e)
 		{
-			(new SettingsWindow()).ShowDialog();
+			if ((new SettingsWindow()).ShowDialog() == true)
+				await ReloadAsync();
 		}
 		private void Exit_Clicked(object sender, RoutedEventArgs e)
 		{
@@ -82,11 +80,11 @@ namespace Com.revo.AzureVmController.Views
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
-		private void AdjustLocation()
+		private void AdjustLocation(Size size)
 		{
 			var workingArea = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;
-			Top = workingArea.Top + workingArea.Height - Height - 10;
-			Left = workingArea.Left + workingArea.Width - Width - 10;
+			Top = workingArea.Top + workingArea.Height - size.Height - 10;
+			Left = workingArea.Left + workingArea.Width - size.Width - 10;
 		}
 		private async Task ReloadAsync()
 		{
