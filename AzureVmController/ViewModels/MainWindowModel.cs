@@ -10,6 +10,8 @@ namespace Com.revo.AzureVmController.ViewModels
 	{
 		private bool isUpdating;
 
+		public AsyncCommand ReloadCommand { get; }
+
 		public VmListItemCollection VmItems { get; } = new VmListItemCollection();
 		public bool IsUpdating
 		{
@@ -17,11 +19,18 @@ namespace Com.revo.AzureVmController.ViewModels
 			private set
 			{
 				if (isUpdating == value) return;
+				ReloadCommand.Executable = !value;
 				isUpdating = value;
 				OnPropertyChanged();
 			}
 		}
 		public event PropertyChangedEventHandler PropertyChanged;
+
+		public MainWindowModel()
+		{
+			ReloadCommand = new AsyncCommand(ReloadAsync);
+		}
+
 		public async Task ReloadAsync()
 		{
 			IsUpdating = true;
@@ -32,6 +41,7 @@ namespace Com.revo.AzureVmController.ViewModels
 			                          subscriptionID: ProtectedSettings.SubscriptionID);
 			IsUpdating = false;
 		}
+
 		[NotifyPropertyChangedInvocator]
 		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
 		{

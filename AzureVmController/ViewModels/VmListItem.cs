@@ -38,22 +38,11 @@ namespace Com.revo.AzureVmController.ViewModels
 		private string name;
 		private string osType;
 		private VmState state;
-		private bool canStart;
-		private bool canStop;
-		private bool canDeallocate;
 		private bool busy;
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		public IVirtualMachine VM
-		{
-			get => vm;
-			set
-			{
-				vm = value;
-				UpdateVmValues();
-			}
-		}
+		public string Id { get; private set; }
 		public string Name
 		{
 			get => name;
@@ -83,40 +72,10 @@ namespace Com.revo.AzureVmController.ViewModels
 				state = value;
 				OnPropertyChanged();
 
-				CanStart = state == VmState.Deallocated || state == VmState.Stopped;
-				CanStop = state == VmState.Running;
-				CanDeallocate = state == VmState.Running || state == VmState.Stopped;
+				StartCommand.Executable = state == VmState.Deallocated || state == VmState.Stopped;
+				StopCommand.Executable = state == VmState.Running;
+				DeallocateCommand.Executable = state == VmState.Running || state == VmState.Stopped;
 				Busy = state == VmState.Deallocating || state == VmState.Starting || state == VmState.Stopping;
-			}
-		}
-		public bool CanStart
-		{
-			get => canStart;
-			set
-			{
-				if (canStart == value) return;
-				canStart = value;
-				OnPropertyChanged();
-			}
-		}
-		public bool CanStop
-		{
-			get => canStop;
-			set
-			{
-				if (canStop == value) return;
-				canStop = value;
-				OnPropertyChanged();
-			}
-		}
-		public bool CanDeallocate
-		{
-			get => canDeallocate;
-			set
-			{
-				if (canDeallocate == value) return;
-				canDeallocate = value;
-				OnPropertyChanged();
 			}
 		}
 		public bool Busy
@@ -130,27 +89,40 @@ namespace Com.revo.AzureVmController.ViewModels
 			}
 		}
 
+		public AsyncCommand<VmListItem> StartCommand { get; } = new AsyncCommand<VmListItem>(item => item.StartAsync());
+		public AsyncCommand<VmListItem> StopCommand { get; } = new AsyncCommand<VmListItem>(item => item.StopAsync());
+		public AsyncCommand<VmListItem> DeallocateCommand { get; } = new AsyncCommand<VmListItem>(item => item.DeallocateAsync());
+
 		public VmListItem([NotNull] IVirtualMachine vm)
 		{
-			this.vm = vm ?? throw new ArgumentNullException(nameof(vm));
-			UpdateVmValues();
+			SetVirtualMachine(vm);
 		}
 
-		public async Task StartAsync(CancellationToken cancellationToken = default)
+		public void SetVirtualMachine([NotNull] IVirtualMachine virtualMachine)
 		{
+			vm = virtualMachine ?? throw new ArgumentNullException(nameof(virtualMachine));
+			Name = $"{vm.ResourceGroupName}\\{vm.Name}";
+			Id = vm.Id;
+			OsType = vm.OSType.ToString();
+			UpdateVmState();
+		}
+
+
+		private async Task StartAsync(CancellationToken cancellationToken = default)
+		{			
 			State = VmState.Starting;
 			await vm.StartAsync(cancellationToken);
 			vm = await vm.RefreshAsync(cancellationToken);
 			UpdateVmState();
 		}
-		public async Task StopAsync(CancellationToken cancellationToken = default)
+		private async Task StopAsync(CancellationToken cancellationToken = default)
 		{
 			State = VmState.Stopping;
 			await vm.PowerOffAsync(cancellationToken);
 			vm = await vm.RefreshAsync(cancellationToken);
 			UpdateVmState();
 		}
-		public async Task DeallocateAsync(CancellationToken cancellationToken = default)
+		private async Task DeallocateAsync(CancellationToken cancellationToken = default)
 		{
 			State = VmState.Deallocating;
 			await vm.DeallocateAsync(cancellationToken);
@@ -158,13 +130,6 @@ namespace Com.revo.AzureVmController.ViewModels
 			UpdateVmState();
 		}
 
-
-		private void UpdateVmValues()
-		{
-			Name = $"{vm.ResourceGroupName}\\{vm.Name}";
-			OsType = vm.OSType.ToString();
-			UpdateVmState();
-		}
 		private void UpdateVmState()
 		{
 			State = powerStateToVmState.TryGetValue(vm.PowerState?.Value ?? string.Empty, out VmState s) ? s : VmState.Unknown;

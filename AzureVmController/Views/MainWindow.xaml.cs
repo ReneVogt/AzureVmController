@@ -2,9 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
 using Com.revo.AzureVmController.ViewModels;
-// ReSharper disable InconsistentNaming
 
 
 namespace Com.revo.AzureVmController.Views
@@ -43,10 +41,6 @@ namespace Com.revo.AzureVmController.Views
 			base.OnDeactivated(e);
 			Hide();
 		}
-		private async void Refresh_Clicked(object sender, RoutedEventArgs e)
-		{
-			await ViewModel.ReloadAsync();
-		}
 		private async void Settings_Clicked(object sender, RoutedEventArgs e)
 		{
 			if ((new SettingsWindow()).ShowDialog() == true)
@@ -57,9 +51,6 @@ namespace Com.revo.AzureVmController.Views
 			userWantsToExit = true;
 			Close();
 		}
-		private void Start_Clicked(object sender, RoutedEventArgs e) => ((sender as Button)?.DataContext as VmListItem)?.StartAsync();
-		private void Stop_Clicked(object sender, RoutedEventArgs e) => ((sender as Button)?.DataContext as VmListItem)?.StopAsync();
-		private void Deallocate_Clicked(object sender, RoutedEventArgs e) => ((sender as Button)?.DataContext as VmListItem)?.DeallocateAsync();
 		private void AdjustLocation(Size size)
 		{
 			var workingArea = System.Windows.Forms.Screen.PrimaryScreen.WorkingArea;

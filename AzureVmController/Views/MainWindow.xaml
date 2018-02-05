@@ -4,7 +4,6 @@
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:Views="clr-namespace:Com.revo.AzureVmController.Views"
         xmlns:Converters="clr-namespace:Com.revo.AzureVmController.Converters"
 		mc:Ignorable="d"
 		Title="Azure VM controller" 
@@ -111,9 +110,9 @@
 										</ProgressBar.Style>
 									</ProgressBar>
 								<DockPanel >
-									<Button Margin="2,2,2,2" IsEnabled="{Binding CanStart}" Click="Start_Clicked">Start</Button>
-									<Button Margin="2,2,2,2" IsEnabled="{Binding CanStop}" Click="Stop_Clicked">Stop</Button>
-									<Button Margin="2,2,2,2" IsEnabled="{Binding CanDeallocate}" Click="Deallocate_Clicked">Deallocate</Button>
+									<Button Margin="2,2,2,2" Command="{Binding StartCommand}" CommandParameter="{Binding}">Start</Button>
+									<Button Margin="2,2,2,2" Command="{Binding StopCommand}" CommandParameter="{Binding}">Stop</Button>
+									<Button Margin="2,2,2,2" Command="{Binding DeallocateCommand}" CommandParameter="{Binding}">Deallocate</Button>
 								</DockPanel>
 							</StackPanel>
 							</Grid>
@@ -139,7 +138,7 @@
 			</ProgressBar.Style>
 		</ProgressBar>
 		<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-			<Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Refresh_Clicked"  Margin="2,2,2,2" IsEnabled="{Binding IsUpdating, Converter={StaticResource BoolInverter}}">Refresh</Button>
+			<Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Command="{Binding ReloadCommand}" Margin="2,2,2,2">Refresh</Button>
 			<Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Settings_Clicked" Margin="2,2,2,2" IsEnabled="{Binding IsUpdating, Converter={StaticResource BoolInverter}}">Settings...</Button>
 			<Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Exit_Clicked" Margin="2,2,2,2">Exit</Button>
 		</StackPanel>

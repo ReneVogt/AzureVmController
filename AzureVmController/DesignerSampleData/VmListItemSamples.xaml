@@ -1,11 +1,11 @@
 ﻿<!-- Copyright 2018 René Vogt. All rights reserved. Use of this source code is governed by the Apache License 2.0, as found in the LICENSE.txt file. -->
 <sysCol:ArrayList xmlns:sysCol="clr-namespace:System.Collections;assembly=mscorlib"
 	xmlns:ViewModels="clr-namespace:Com.revo.AzureVmController.ViewModels">
-	<ViewModels:VmListItem Name="test1" State="Deallocated" OsType="Linux" CanStart="True" CanStop="False" CanDeallocate="False" Busy="False" />
-	<ViewModels:VmListItem Name="test2" State="Starting" OsType="Windows" CanStart="False" CanStop="False" CanDeallocate="False" Busy="True" />
-	<ViewModels:VmListItem Name="test3" State="Stopping" OsType="Linux" CanStart="False" CanStop="False" CanDeallocate="False" Busy="True" />
-	<ViewModels:VmListItem Name="test4" State="Stopped" OsType="Windows" CanStart="True" CanStop="False" CanDeallocate="True" Busy="False" />
-	<ViewModels:VmListItem Name="test5" State="Running" OsType="Linux" CanStart="False" CanStop="True" CanDeallocate="True" Busy="False" />
-	<ViewModels:VmListItem Name="test6" State="Deallocating" OsType="Windows" CanStart="False" CanStop="False" CanDeallocate="False" Busy="True" />
+	<ViewModels:VmListItem Name="test1" State="Deallocated" OsType="Linux" Busy="False" />
+	<ViewModels:VmListItem Name="test2" State="Starting" OsType="Windows" Busy="True" />
+	<ViewModels:VmListItem Name="test3" State="Stopping" OsType="Linux" Busy="True" />
+	<ViewModels:VmListItem Name="test4" State="Stopped" OsType="Windows" Busy="False" />
+	<ViewModels:VmListItem Name="test5" State="Running" OsType="Linux" Busy="False" />
+	<ViewModels:VmListItem Name="test6" State="Deallocating" OsType="Windows" Busy="True" />
 	<ViewModels:VmListItem Name="testmitlangemlangemlangemmnamen" State="Deallocating" />
 </sysCol:ArrayList>
