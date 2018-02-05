@@ -2,6 +2,8 @@
 using System;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Input;
+using System.Windows.Threading;
 using Com.revo.AzureVmController.ViewModels;
 
 
@@ -13,17 +15,20 @@ namespace Com.revo.AzureVmController.Views
 	public partial class MainWindow
 	{
 		private bool userWantsToExit;
+		public DateTime MouseLeft { get; set; }
 
 		public MainWindowModel ViewModel { get; } = new MainWindowModel();
 
 		public MainWindow()
 		{
-			InitializeComponent();			
+			InitializeComponent();
+			DispatcherTimer timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100), IsEnabled = true};
+			timer.Tick += Timer_Tick;
 		}
-
 		private void MainWindow_OnActivated(object sender, EventArgs e)
 		{
 			AdjustLocation(RenderSize);
+			MouseLeft = DateTime.Now;
 		}
 		private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
 		{
@@ -40,6 +45,21 @@ namespace Com.revo.AzureVmController.Views
 		{
 			base.OnDeactivated(e);
 			Hide();
+		}
+		protected override void OnMouseEnter(MouseEventArgs e)
+		{
+			base.OnMouseLeave(e);
+			MouseLeft = DateTime.MaxValue;
+		}
+		protected override void OnMouseLeave(MouseEventArgs e)
+		{
+			base.OnMouseLeave(e);
+			MouseLeft = DateTime.Now;
+		}
+		private void Timer_Tick(object sender, EventArgs e)
+		{
+			if (DateTime.Now - MouseLeft > TimeSpan.FromMilliseconds(1500))
+				Hide();
 		}
 		private async void Settings_Clicked(object sender, RoutedEventArgs e)
 		{
