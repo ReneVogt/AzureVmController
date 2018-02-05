@@ -4,7 +4,8 @@
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:Converters="clr-namespace:Com.revo.AzureVmController.Converters"
+        xmlns:Views="clr-namespace:Com.revo.AzureVmController.Views"
+        xmlns:Converters="clr-namespace:Com.revo.AzureVmController.Converters"
 		mc:Ignorable="d"
 		Title="Azure VM controller" 
 		Height="Auto" MinHeight="200" MaxHeight="400" 
@@ -18,6 +19,7 @@
 		WindowStartupLocation="Manual"
 		Activated="MainWindow_OnActivated"
 		SizeChanged="MainWindow_OnSizeChanged"
+        DataContext="{Binding RelativeSource={RelativeSource Self}, Path=ViewModel}"
 		>
 	<Window.Resources>
 		<CollectionViewSource x:Key="VmItemsSource" Source="{Binding VmItems}" d:Source="{d:DesignData ../DesignerSampleData/VmListItemSamples.xaml}" />
@@ -137,7 +139,7 @@
 			</ProgressBar.Style>
 		</ProgressBar>
 		<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-			<Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Refresh_Clicked" Margin="2,2,2,2" IsEnabled="{Binding IsUpdating, Converter={StaticResource BoolInverter}}">Refresh</Button>
+			<Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Refresh_Clicked"  Margin="2,2,2,2" IsEnabled="{Binding IsUpdating, Converter={StaticResource BoolInverter}}">Refresh</Button>
 			<Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Settings_Clicked" Margin="2,2,2,2" IsEnabled="{Binding IsUpdating, Converter={StaticResource BoolInverter}}">Settings...</Button>
 			<Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Exit_Clicked" Margin="2,2,2,2">Exit</Button>
 		</StackPanel>
