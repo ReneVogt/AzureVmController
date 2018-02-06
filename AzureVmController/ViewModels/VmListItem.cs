@@ -89,9 +89,9 @@ namespace Com.revo.AzureVmController.ViewModels
 			}
 		}
 
-		public AsyncCommand<VmListItem> StartCommand { get; } = new AsyncCommand<VmListItem>(item => item.StartAsync());
-		public AsyncCommand<VmListItem> StopCommand { get; } = new AsyncCommand<VmListItem>(item => item.StopAsync());
-		public AsyncCommand<VmListItem> DeallocateCommand { get; } = new AsyncCommand<VmListItem>(item => item.DeallocateAsync());
+		public CustomCommand<VmListItem> StartCommand { get; } = new CustomCommand<VmListItem>(async item => await item.StartAsync());
+		public CustomCommand<VmListItem> StopCommand { get; } = new CustomCommand<VmListItem>(async item => await item.StopAsync());
+		public CustomCommand<VmListItem> DeallocateCommand { get; } = new CustomCommand<VmListItem>(async item => await item.DeallocateAsync());
 
 		public VmListItem([NotNull] IVirtualMachine vm)
 		{
@@ -106,7 +106,6 @@ namespace Com.revo.AzureVmController.ViewModels
 			OsType = vm.OSType.ToString();
 			UpdateVmState();
 		}
-
 
 		private async Task StartAsync(CancellationToken cancellationToken = default)
 		{			

@@ -10,7 +10,7 @@ namespace Com.revo.AzureVmController.ViewModels
 	{
 		private bool isUpdating;
 
-		public AsyncCommand ReloadCommand { get; }
+		public CustomCommand ReloadCommand { get; }
 
 		public VmListItemCollection VmItems { get; } = new VmListItemCollection();
 		public bool IsUpdating
@@ -28,7 +28,7 @@ namespace Com.revo.AzureVmController.ViewModels
 
 		public MainWindowModel()
 		{
-			ReloadCommand = new AsyncCommand(ReloadAsync);
+			ReloadCommand = new CustomCommand(async () => await ReloadAsync());
 		}
 
 		public async Task ReloadAsync()

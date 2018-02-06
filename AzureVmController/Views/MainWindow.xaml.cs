@@ -61,10 +61,10 @@ namespace Com.revo.AzureVmController.Views
 			if (DateTime.Now - MouseLeft > TimeSpan.FromMilliseconds(1500))
 				Hide();
 		}
-		private async void Settings_Clicked(object sender, RoutedEventArgs e)
+		private void Settings_Clicked(object sender, RoutedEventArgs e)
 		{
 			if ((new SettingsWindow()).ShowDialog() == true)
-				await ViewModel.ReloadAsync();
+				ViewModel.ReloadCommand.Execute(null);
 		}
 		private void Exit_Clicked(object sender, RoutedEventArgs e)
 		{

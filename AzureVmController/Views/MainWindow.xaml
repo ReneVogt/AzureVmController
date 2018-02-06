@@ -138,7 +138,7 @@
 			</ProgressBar.Style>
 		</ProgressBar>
 		<StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-			<Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Command="{Binding ReloadCommand}" Margin="2,2,2,2">Refresh</Button>
+			<Button Name="btReload"  HorizontalAlignment="Right" VerticalAlignment="Bottom" Command="{Binding ReloadCommand}" Margin="2,2,2,2">Refresh</Button>
 			<Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Settings_Clicked" Margin="2,2,2,2" IsEnabled="{Binding IsUpdating, Converter={StaticResource BoolInverter}}">Settings...</Button>
 			<Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Exit_Clicked" Margin="2,2,2,2">Exit</Button>
 		</StackPanel>
