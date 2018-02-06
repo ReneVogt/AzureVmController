@@ -3,40 +3,32 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Azure.Management.Fluent;
-using Microsoft.Azure.Management.ResourceManager.Fluent;
-using Microsoft.Azure.Management.ResourceManager.Fluent.Core;
+using Com.revo.AzureVmController.Models;
 
 namespace Com.revo.AzureVmController.ViewModels
 {
 	public class VmListItemCollection : ObservableCollection<VmListItem>
 	{
-		private IAzure azure;
-		private string _clientID, _authKey, _tenantID, _subscriptionID;
+		private readonly VirtualMachines vms = new VirtualMachines();
 
-		public async Task ReloadAsync(string clientID, string authKey, string tenantID, string subscriptionID, CancellationToken cancellationToken = default)
+		public async Task ReloadAsync(CancellationToken cancellationToken = default)
 		{
-			if (azure == null || _clientID != clientID || _authKey != authKey || _tenantID != tenantID || _subscriptionID != subscriptionID)
-			{
-				_clientID = clientID;
-				_authKey = authKey;
-				_tenantID = tenantID;
-				_subscriptionID = subscriptionID;
-				var credentials = SdkContext.AzureCredentialsFactory.FromServicePrincipal(_clientID, _authKey, _tenantID, AzureEnvironment.AzureGlobalCloud).WithDefaultSubscription(_subscriptionID);
-				azure = Azure.Configure()
-				             .WithLogLevel(HttpLoggingDelegatingHandler.Level.Basic)
-				             .Authenticate(credentials)
-				             .WithDefaultSubscription();
-			}
+			await vms.ReloadAsync(
+			                      clientID: ProtectedSettings.ClientID, 
+			                      authKey: ProtectedSettings.AuthKey, 
+			                      tenantID: ProtectedSettings.TenantID,
+								  subscriptionID: ProtectedSettings.SubscriptionID,
+								  cancellationToken: cancellationToken);
 
-			var vms = (await azure.VirtualMachines.ListAsync(cancellationToken: cancellationToken)).ToDictionary(vm => vm.Id);
-			var toRemove = this.Where(item => !vms.ContainsKey(item.Id)).ToArray();
-			foreach (var item in toRemove) Remove(item);
-			foreach (var vm in vms.Values)
+			var currentVms = vms.ToList();
+			var toRemove = this.Where(vm => currentVms.All(cvm => cvm.Id != vm.Id)).ToArray();
+			foreach (var vm in toRemove) Remove(vm);
+
+			foreach (var cvm in currentVms)
 			{
-				VmListItem existingItem = this.FirstOrDefault(item => item.Id == vm.Id);
-				if (existingItem == null) Add(new VmListItem(vm));
-				else existingItem.SetVirtualMachine(vm);
+				var vm = this.FirstOrDefault(e => e.Id == cvm.Id);
+				if (vm == null) Add(new VmListItem(cvm));
+				else vm.Refresh();
 			}
 		}
 	}

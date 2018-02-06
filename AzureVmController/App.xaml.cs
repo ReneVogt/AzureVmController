@@ -2,6 +2,7 @@
 using System;
 using System.Windows;
 using System.Windows.Forms;
+using Com.revo.AzureVmController.Properties;
 
 namespace Com.revo.AzureVmController
 {
@@ -15,6 +16,13 @@ namespace Com.revo.AzureVmController
 
 		private void Application_Startup(object sender, StartupEventArgs e)
 		{
+			if (!Settings.Default.Upgraded)
+			{
+				Settings.Default.Upgrade();
+				Settings.Default.Upgraded = true;
+				Settings.Default.Save();
+			}
+
 			mainWindow = new Views.MainWindow();
 			notifyIcon = new NotifyIcon
 			{

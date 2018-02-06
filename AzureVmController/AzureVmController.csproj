@@ -168,6 +168,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Converters\BoolInverter.cs" />
+    <Compile Include="Models\VirtualMachine.cs" />
+    <Compile Include="Models\VirtualMachines.cs" />
+    <Compile Include="Models\VmState.cs" />
     <Compile Include="ViewModels\CustomCommand.cs" />
     <Compile Include="ViewModels\MainWindowModel.cs" />
     <Compile Include="ViewModels\VmListItem.cs" />

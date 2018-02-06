@@ -1,8 +1,8 @@
-﻿using System.ComponentModel;
+﻿// Copyright 2018 René Vogt. All rights reserved. Use of this source code is governed by the Apache License 2.0, as found in the LICENSE.txt file.
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Com.revo.AzureVmController.Annotations;
-using Com.revo.AzureVmController.Models;
 
 namespace Com.revo.AzureVmController.ViewModels
 {
@@ -31,14 +31,10 @@ namespace Com.revo.AzureVmController.ViewModels
 			ReloadCommand = new CustomCommand(async () => await ReloadAsync());
 		}
 
-		public async Task ReloadAsync()
+		private async Task ReloadAsync()
 		{
 			IsUpdating = true;
-			await VmItems.ReloadAsync(
-			                          clientID: ProtectedSettings.ClientID,
-			                          authKey: ProtectedSettings.AuthKey,
-			                          tenantID: ProtectedSettings.TenantID,
-			                          subscriptionID: ProtectedSettings.SubscriptionID);
+			await VmItems.ReloadAsync();
 			IsUpdating = false;
 		}
 

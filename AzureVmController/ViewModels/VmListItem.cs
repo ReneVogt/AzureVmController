@@ -1,40 +1,16 @@
 ﻿// Copyright 2018 René Vogt. All rights reserved. Use of this source code is governed by the Apache License 2.0, as found in the LICENSE.txt file.
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Com.revo.AzureVmController.Annotations;
-using Microsoft.Azure.Management.Compute.Fluent;
+using Com.revo.AzureVmController.Models;
 
 namespace Com.revo.AzureVmController.ViewModels
 {
 	public class VmListItem : INotifyPropertyChanged
 	{
-		public enum VmState
-		{
-			Unknown,
-			Deallocated,
-			Deallocating,
-			Stopped,
-			Stopping,
-			Running,
-			Starting
-		}
-
-		private readonly Dictionary<string, VmState> powerStateToVmState = new Dictionary<string, VmState>
-		{
-			[PowerState.Unknown.Value] = VmState.Unknown,
-			[PowerState.Deallocated.Value] = VmState.Deallocated,
-			[PowerState.Deallocating.Value] = VmState.Deallocating,
-			[PowerState.Stopped.Value] = VmState.Stopped,
-			[PowerState.Stopping.Value] = VmState.Stopping,
-			[PowerState.Running.Value] = VmState.Running,
-			[PowerState.Starting.Value] = VmState.Starting
-		};
-
-		private IVirtualMachine vm;
+		private readonly VirtualMachine vm;
 		private string name;
 		private string osType;
 		private VmState state;
@@ -93,45 +69,37 @@ namespace Com.revo.AzureVmController.ViewModels
 		public CustomCommand<VmListItem> StopCommand { get; } = new CustomCommand<VmListItem>(async item => await item.StopAsync());
 		public CustomCommand<VmListItem> DeallocateCommand { get; } = new CustomCommand<VmListItem>(async item => await item.DeallocateAsync());
 
-		public VmListItem([NotNull] IVirtualMachine vm)
+		public VmListItem([NotNull] VirtualMachine vm)
 		{
-			SetVirtualMachine(vm);
+			this.vm = vm;
+			Refresh();
 		}
 
-		public void SetVirtualMachine([NotNull] IVirtualMachine virtualMachine)
+		public void Refresh()
 		{
-			vm = virtualMachine ?? throw new ArgumentNullException(nameof(virtualMachine));
-			Name = $"{vm.ResourceGroupName}\\{vm.Name}";
 			Id = vm.Id;
-			OsType = vm.OSType.ToString();
-			UpdateVmState();
+			Name = vm.Name;
+			OsType = vm.OS;
+			State = vm.State;
 		}
 
 		private async Task StartAsync(CancellationToken cancellationToken = default)
 		{			
 			State = VmState.Starting;
 			await vm.StartAsync(cancellationToken);
-			vm = await vm.RefreshAsync(cancellationToken);
-			UpdateVmState();
+			Refresh();
 		}
 		private async Task StopAsync(CancellationToken cancellationToken = default)
 		{
 			State = VmState.Stopping;
-			await vm.PowerOffAsync(cancellationToken);
-			vm = await vm.RefreshAsync(cancellationToken);
-			UpdateVmState();
+			await vm.StopAsync(cancellationToken);
+			Refresh();
 		}
 		private async Task DeallocateAsync(CancellationToken cancellationToken = default)
 		{
 			State = VmState.Deallocating;
 			await vm.DeallocateAsync(cancellationToken);
-			vm = await vm.RefreshAsync(cancellationToken);
-			UpdateVmState();
-		}
-
-		private void UpdateVmState()
-		{
-			State = powerStateToVmState.TryGetValue(vm.PowerState?.Value ?? string.Empty, out VmState s) ? s : VmState.Unknown;
+			Refresh();
 		}
 
 		[NotifyPropertyChangedInvocator]
