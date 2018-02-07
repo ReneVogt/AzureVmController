@@ -1,4 +1,6 @@
 ﻿// Copyright 2018 René Vogt. All rights reserved. Use of this source code is governed by the Apache License 2.0, as found in the LICENSE.txt file.
+
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -17,6 +19,7 @@ namespace Com.revo.AzureVmController.ViewModels
 		private bool busy;
 
 		public event PropertyChangedEventHandler PropertyChanged;
+		public event EventHandler<VmErrorEventArgs> ErrorOccured;
 
 		public string Id { get; private set; }
 		public string Name
@@ -86,19 +89,42 @@ namespace Com.revo.AzureVmController.ViewModels
 		private async Task StartAsync(CancellationToken cancellationToken = default)
 		{			
 			State = VmState.Starting;
-			await vm.StartAsync(cancellationToken);
+
+			try
+			{
+				await vm.StartAsync(cancellationToken);
+			}
+			catch (Exception e)
+			{
+				ErrorOccured?.Invoke(this, new VmErrorEventArgs(Name, e));
+			}
+
 			Refresh();
 		}
 		private async Task StopAsync(CancellationToken cancellationToken = default)
 		{
 			State = VmState.Stopping;
-			await vm.StopAsync(cancellationToken);
+			try
+			{
+				await vm.StopAsync(cancellationToken);
+			}
+			catch (Exception e)
+			{
+				ErrorOccured?.Invoke(this, new VmErrorEventArgs(Name, e));
+			}
 			Refresh();
 		}
 		private async Task DeallocateAsync(CancellationToken cancellationToken = default)
 		{
 			State = VmState.Deallocating;
-			await vm.DeallocateAsync(cancellationToken);
+			try
+			{
+				await vm.DeallocateAsync(cancellationToken);
+			}
+			catch (Exception e)
+			{
+				ErrorOccured?.Invoke(this, new VmErrorEventArgs(Name, e));
+			}
 			Refresh();
 		}
 

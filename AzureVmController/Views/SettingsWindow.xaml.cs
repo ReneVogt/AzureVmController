@@ -9,19 +9,18 @@ namespace Com.revo.AzureVmController.Views
 	/// </summary>
 	public partial class SettingsWindow
 	{
-		private readonly EditableCredentials credentials = new EditableCredentials();
+		public EditableCredentials Credentials { get; } = new EditableCredentials();
 
 		public SettingsWindow()
 		{
 			InitializeComponent();
-			credentials.Load();
-			DataContext = credentials;
+			Credentials.Load();
 		}
 
 		private void Ok_Clicked(object sender, EventArgs e)
 		{
 			DialogResult = true;
-			credentials.Save();
+			Credentials.Save();
 			Close();
 		}
 		private void Cancel_Clicked(object sender, EventArgs e)

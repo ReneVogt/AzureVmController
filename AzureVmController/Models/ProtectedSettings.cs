@@ -29,6 +29,8 @@ namespace Com.revo.AzureVmController.Models
 			get => Decode(Settings.Default.Access_SubscriptionID);
 			set => Settings.Default.Access_SubscriptionID = Encode(value);
 		}
+		public static bool AreValid => !(string.IsNullOrWhiteSpace(AuthKey) || string.IsNullOrWhiteSpace(ClientID) || string.IsNullOrWhiteSpace(TenantID) || string.IsNullOrWhiteSpace(SubscriptionID));
+
 		public static void Save()
 		{
 			Settings.Default.Save();

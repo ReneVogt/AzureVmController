@@ -19,11 +19,23 @@ namespace Com.revo.AzureVmController.Views
 
 		public MainWindowModel ViewModel { get; } = new MainWindowModel();
 
+		public event EventHandler<VmStateChangedEventArgs> VmStateChanged
+		{
+			add => ViewModel.VmItems.VmStateChanged += value;
+			remove => ViewModel.VmItems.VmStateChanged -= value;
+		}
+		public event EventHandler<AzureErrorEventArgs> ErrorOccured
+		{
+			add => ViewModel.VmItems.ErrorOccured += value;
+			remove => ViewModel.VmItems.ErrorOccured -= value;
+		}
+
 		public MainWindow()
 		{
 			InitializeComponent();
 			DispatcherTimer timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100), IsEnabled = true};
 			timer.Tick += Timer_Tick;
+			ViewModel.ReloadCommand.Execute(null);
 		}
 		private void MainWindow_OnActivated(object sender, EventArgs e)
 		{

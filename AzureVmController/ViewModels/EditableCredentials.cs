@@ -21,6 +21,7 @@ namespace Com.revo.AzureVmController.ViewModels
 				if (authKey == value) return;
 				authKey = value;
 				OnPropertyChanged();
+				OnPropertyChanged(nameof(AreValid));
 			}
 		}
 		public string ClientID
@@ -31,6 +32,7 @@ namespace Com.revo.AzureVmController.ViewModels
 				if (clientID == value) return;
 				clientID = value;
 				OnPropertyChanged();
+				OnPropertyChanged(nameof(AreValid));
 			}
 		}
 		public string TenantID
@@ -41,6 +43,7 @@ namespace Com.revo.AzureVmController.ViewModels
 				if (tenantID == value) return;
 				tenantID = value;
 				OnPropertyChanged();
+				OnPropertyChanged(nameof(AreValid));
 			}
 		}
 		public string SubscriptionID
@@ -51,14 +54,12 @@ namespace Com.revo.AzureVmController.ViewModels
 				if (subscriptionID == value) return;
 				subscriptionID = value;
 				OnPropertyChanged();
+				OnPropertyChanged(nameof(AreValid));
 			}
 		}
+		public bool AreValid => !(string.IsNullOrWhiteSpace(authKey) || string.IsNullOrWhiteSpace(clientID) || string.IsNullOrWhiteSpace(tenantID) || string.IsNullOrWhiteSpace(subscriptionID));
+
 		public event PropertyChangedEventHandler PropertyChanged;
-		[NotifyPropertyChangedInvocator]
-		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-		}
 
 		public void Load()
 		{
@@ -74,6 +75,12 @@ namespace Com.revo.AzureVmController.ViewModels
 			ProtectedSettings.TenantID = TenantID;
 			ProtectedSettings.SubscriptionID = SubscriptionID;
 			ProtectedSettings.Save();
+		}
+
+		[NotifyPropertyChangedInvocator]
+		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 	}
 }
