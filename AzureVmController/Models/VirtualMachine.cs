@@ -40,7 +40,7 @@ namespace Com.revo.AzureVmController.Models
 		{
 			vm = virtualMachine ?? throw new ArgumentNullException(nameof(virtualMachine));
 
-			Name = $"{vm.ResourceGroupName}\\{vm.Name}";
+			Name = vm.Name;
 			OS = vm.OSType.ToString();
 			State = powerStateToVmState.TryGetValue(vm.PowerState?.Value ?? string.Empty, out VmState s) ? s : VmState.Unknown;
 		}
